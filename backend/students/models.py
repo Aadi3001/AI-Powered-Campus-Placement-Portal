@@ -30,3 +30,24 @@ class StudentProfile(models.Model):
 
     def __str__(self):
         return f"{self.full_name} ({self.user.username})"
+
+
+class Education(models.Model):
+    """
+    One education record (e.g. 10th, 12th, Bachelor's).
+    A student can have multiple Education entries.
+    """
+    student = models.ForeignKey(
+        StudentProfile,
+        on_delete=models.CASCADE,
+        related_name='education',
+    )
+
+    level = models.CharField(max_length=100)          # e.g. "10th", "12th", "Bachelor's"
+    institution = models.CharField(max_length=200)
+    board_or_university = models.CharField(max_length=200, blank=True)
+    percentage_or_cgpa = models.DecimalField(max_digits=5, decimal_places=2)
+    year_of_completion = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"{self.level} - {self.institution} ({self.student.full_name})"
