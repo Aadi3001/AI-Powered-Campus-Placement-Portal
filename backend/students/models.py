@@ -97,3 +97,23 @@ class Project(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.student.full_name}"
+
+
+class Internship(models.Model):
+    """
+    An internship a student has completed or is doing.
+    A student can have many internships.
+    """
+    student = models.ForeignKey(
+        StudentProfile,
+        on_delete=models.CASCADE,
+        related_name='internships',
+    )
+    company_name = models.CharField(max_length=200)
+    role = models.CharField(max_length=150)
+    start_date = models.DateField()
+    end_date = models.DateField(null=True, blank=True)  # null = ongoing
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.role} at {self.company_name} - {self.student.full_name}"

@@ -3,6 +3,7 @@ from .models import StudentProfile
 from .models import Education
 from .models import Skill
 from .models import Project
+from .models import Internship
 
 
 class StudentProfileSerializer(serializers.ModelSerializer):
@@ -35,3 +36,9 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ['id', 'title', 'description', 'technologies_used', 'project_link']
+
+
+class InternshipSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Internship
+        fields = ['id', 'company_name', 'role', 'start_date', 'end_date', 'description']
