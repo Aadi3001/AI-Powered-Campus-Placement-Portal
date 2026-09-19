@@ -51,3 +51,30 @@ class Education(models.Model):
 
     def __str__(self):
         return f"{self.level} - {self.institution} ({self.student.full_name})"
+
+
+class Skill(models.Model):
+    """
+    A single skill claimed by a student (e.g. "Python", "React").
+    A student can have many skills.
+    """
+    PROFICIENCY_CHOICES = [
+        ('BEGINNER', 'Beginner'),
+        ('INTERMEDIATE', 'Intermediate'),
+        ('ADVANCED', 'Advanced'),
+    ]
+
+    student = models.ForeignKey(
+        StudentProfile,
+        on_delete=models.CASCADE,
+        related_name='skills',
+    )
+    name = models.CharField(max_length=100)
+    proficiency = models.CharField(
+        max_length=20,
+        choices=PROFICIENCY_CHOICES,
+        default='INTERMEDIATE',
+    )
+
+    def __str__(self):
+        return f"{self.name} ({self.proficiency}) - {self.student.full_name}"

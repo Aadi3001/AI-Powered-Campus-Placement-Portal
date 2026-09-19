@@ -1,6 +1,6 @@
 from rest_framework import generics, permissions
-from .models import StudentProfile, Education
-from .serializers import StudentProfileSerializer, EducationSerializer
+from .models import StudentProfile, Education, Skill
+from .serializers import StudentProfileSerializer, EducationSerializer, SkillSerializer
 
 
 class MyStudentProfileView(generics.RetrieveUpdateAPIView):
@@ -31,4 +31,15 @@ class EducationListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         # Automatically attach the logged-in user's profile as the owner
+        serializer.save(student=self.request.user.student_profile)
+
+
+class SkillListCreateView(generics.ListCreateAPIView):
+    serializer_class = SkillSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Skill.objects.filter(student=self.request.user.student_profile)
+
+    def perform_create(self, serializer):
         serializer.save(student=self.request.user.student_profile)

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import StudentProfile
 from .models import Education
+from .models import Skill
 
 
 class StudentProfileSerializer(serializers.ModelSerializer):
@@ -21,3 +22,9 @@ class EducationSerializer(serializers.ModelSerializer):
             'id', 'level', 'institution', 'board_or_university',
             'percentage_or_cgpa', 'year_of_completion',
         ]
+
+
+class SkillSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Skill
+        fields = ['id', 'name', 'proficiency']
