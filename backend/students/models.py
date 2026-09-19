@@ -78,3 +78,22 @@ class Skill(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.proficiency}) - {self.student.full_name}"
+
+
+class Project(models.Model):
+    """
+    A project a student has worked on.
+    A student can have many projects.
+    """
+    student = models.ForeignKey(
+        StudentProfile,
+        on_delete=models.CASCADE,
+        related_name='projects',
+    )
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    technologies_used = models.CharField(max_length=300, blank=True)  # e.g. "Django, React, PostgreSQL"
+    project_link = models.URLField(blank=True)  # e.g. GitHub or live demo link
+
+    def __str__(self):
+        return f"{self.title} - {self.student.full_name}"

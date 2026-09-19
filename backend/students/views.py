@@ -1,6 +1,6 @@
 from rest_framework import generics, permissions
-from .models import StudentProfile, Education, Skill
-from .serializers import StudentProfileSerializer, EducationSerializer, SkillSerializer
+from .models import StudentProfile, Education, Skill, Project
+from .serializers import (StudentProfileSerializer, EducationSerializer, SkillSerializer, ProjectSerializer)
 
 
 class MyStudentProfileView(generics.RetrieveUpdateAPIView):
@@ -40,6 +40,17 @@ class SkillListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         return Skill.objects.filter(student=self.request.user.student_profile)
+
+    def perform_create(self, serializer):
+        serializer.save(student=self.request.user.student_profile)
+
+
+class ProjectListCreateView(generics.ListCreateAPIView):
+    serializer_class = ProjectSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Project.objects.filter(student=self.request.user.student_profile)
 
     def perform_create(self, serializer):
         serializer.save(student=self.request.user.student_profile)
