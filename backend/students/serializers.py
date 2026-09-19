@@ -4,6 +4,7 @@ from .models import Education
 from .models import Skill
 from .models import Project
 from .models import Internship
+from .models import Certification
 
 
 class StudentProfileSerializer(serializers.ModelSerializer):
@@ -42,3 +43,9 @@ class InternshipSerializer(serializers.ModelSerializer):
     class Meta:
         model = Internship
         fields = ['id', 'company_name', 'role', 'start_date', 'end_date', 'description']
+
+
+class CertificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Certification
+        fields = ['id', 'title', 'issuing_organization', 'issue_date', 'credential_url']

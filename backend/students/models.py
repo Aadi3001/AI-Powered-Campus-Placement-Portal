@@ -117,3 +117,22 @@ class Internship(models.Model):
 
     def __str__(self):
         return f"{self.role} at {self.company_name} - {self.student.full_name}"
+
+
+class Certification(models.Model):
+    """
+    A certification/course a student has completed.
+    A student can have many certifications.
+    """
+    student = models.ForeignKey(
+        StudentProfile,
+        on_delete=models.CASCADE,
+        related_name='certifications',
+    )
+    title = models.CharField(max_length=200)
+    issuing_organization = models.CharField(max_length=200)
+    issue_date = models.DateField()
+    credential_url = models.URLField(blank=True)
+
+    def __str__(self):
+        return f"{self.title} - {self.student.full_name}"
