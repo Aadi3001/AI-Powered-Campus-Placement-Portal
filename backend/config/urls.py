@@ -32,6 +32,7 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/register/', RegisterView.as_view(), name='register'),
     path('api/student/', include('students.urls')),
+    path('api/recruiter/', include('recruiters.urls')),
 ]
 
 if settings.DEBUG:
