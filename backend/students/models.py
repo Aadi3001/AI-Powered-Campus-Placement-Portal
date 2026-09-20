@@ -14,13 +14,13 @@ class StudentProfile(models.Model):
         related_name='student_profile',
     )
 
-    full_name = models.CharField(max_length=150)
+    full_name = models.CharField(max_length=150, blank=True, default='')
     phone_number = models.CharField(max_length=15, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
 
-    degree = models.CharField(max_length=100)          # e.g. "B.Tech"
-    branch = models.CharField(max_length=100)           # e.g. "Computer Engineering"
-    graduation_year = models.PositiveIntegerField()
+    degree = models.CharField(max_length=100, blank=True)
+    branch = models.CharField(max_length=100, blank=True)
+    graduation_year = models.PositiveIntegerField(null=True, blank=True)
     cgpa = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
 
     resume = models.FileField(upload_to='resumes/', null=True, blank=True)
