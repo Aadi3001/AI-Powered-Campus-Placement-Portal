@@ -33,6 +33,7 @@ urlpatterns = [
     path('api/register/', RegisterView.as_view(), name='register'),
     path('api/student/', include('students.urls')),
     path('api/recruiter/', include('recruiters.urls')),
+    path('api/applications/', include('applications.urls')),
 ]
 
 if settings.DEBUG:
