@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from .utils import extract_text_from_pdf
 
 
 class StudentProfile(models.Model):
@@ -24,12 +25,25 @@ class StudentProfile(models.Model):
     cgpa = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
 
     resume = models.FileField(upload_to='resumes/', null=True, blank=True)
+    resume_text = models.TextField(blank=True, default='')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.full_name} ({self.user.username})"
+
+    def save(self, *args, **kwargs):
+        # Save first, so the file actually exists on disk at self.resume.path
+        super().save(*args, **kwargs)
+
+        if self.resume and not self.resume_text:
+            try:
+                extracted = extract_text_from_pdf(self.resume.path)
+                # Avoid infinite recursion: update only the resume_text field directly
+                StudentProfile.objects.filter(pk=self.pk).update(resume_text=extracted)
+            except Exception as e:
+                print(f"Resume text extraction failed: {e}")
 
 
 class Education(models.Model):

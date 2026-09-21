@@ -13,9 +13,9 @@ class StudentProfileSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'full_name', 'phone_number', 'date_of_birth',
             'degree', 'branch', 'graduation_year', 'cgpa',
-            'resume', 'created_at', 'updated_at',
+            'resume', 'resume_text', 'created_at', 'updated_at',
         ]
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'resume_text', 'created_at', 'updated_at']
 
 
 class EducationSerializer(serializers.ModelSerializer):
