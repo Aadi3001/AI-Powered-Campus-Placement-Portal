@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import models
-from .utils import extract_text_from_pdf
+from .utils import extract_text_from_pdf, extract_skills_from_text
 
 
 class StudentProfile(models.Model):
@@ -34,16 +34,28 @@ class StudentProfile(models.Model):
         return f"{self.full_name} ({self.user.username})"
 
     def save(self, *args, **kwargs):
-        # Save first, so the file actually exists on disk at self.resume.path
         super().save(*args, **kwargs)
 
         if self.resume and not self.resume_text:
             try:
-                extracted = extract_text_from_pdf(self.resume.path)
-                # Avoid infinite recursion: update only the resume_text field directly
-                StudentProfile.objects.filter(pk=self.pk).update(resume_text=extracted)
+                extracted_text = extract_text_from_pdf(self.resume.path)
+                self.resume_text = extracted_text
+                StudentProfile.objects.filter(pk=self.pk).update(resume_text=extracted_text)
+
+                # Auto-extract and add skills found in the resume
+                from recruiters.models import SkillTag
+                skill_names = list(SkillTag.objects.values_list('name', flat=True))
+                found_skills = extract_skills_from_text(extracted_text, skill_names)
+
+                existing_skill_names = set(
+                    self.skills.values_list('name', flat=True)
+                )
+                for skill_name in found_skills:
+                    if skill_name not in existing_skill_names:
+                        Skill.objects.create(student=self, name=skill_name)
+
             except Exception as e:
-                print(f"Resume text extraction failed: {e}")
+                print(f"Resume processing failed: {e}")
 
 
 class Education(models.Model):
