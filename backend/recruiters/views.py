@@ -1,4 +1,5 @@
 from rest_framework import generics, permissions
+from students.utils import extract_skills_from_text
 from .models import (Company, RecruiterProfile, SkillTag, Job)
 from .serializers import (CompanySerializer, RecruiterProfileSerializer, SkillTagSerializer, JobSerializer)
 
@@ -38,11 +39,20 @@ class SkillTagListCreateView(generics.ListCreateAPIView):
 class JobListCreateView(generics.ListCreateAPIView):
     """
     GET  -> list all jobs (visible to everyone — students need to browse them)
-    POST -> create a new job, automatically owned by the logged-in recruiter
+    POST -> create a new job, automatically owned by the logged-in recruiter.
+            If no required_skills were specified, auto-detect them from
+            the job description using the same NLP technique as resumes.
     """
     queryset = Job.objects.all()
     serializer_class = JobSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(recruiter=self.request.user.recruiter_profile)
+        job = serializer.save(recruiter=self.request.user.recruiter_profile)
+
+        if not job.required_skills.exists():
+            all_skill_names = list(SkillTag.objects.values_list('name', flat=True))
+            found_skill_names = extract_skills_from_text(job.description, all_skill_names)
+
+            matching_tags = SkillTag.objects.filter(name__in=found_skill_names)
+            job.required_skills.set(matching_tags)
