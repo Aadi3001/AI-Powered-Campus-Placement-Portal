@@ -57,3 +57,24 @@ def check_eligibility(student, job):
 
     checks['overall_eligible'] = all(checks.values())
     return checks
+
+
+def generate_match_report(student, job):
+    """
+    Combines skill matching and eligibility checks into one
+    explainable match report for a student applying to a job.
+    """
+    student_skills = list(student.skills.values_list('name', flat=True))
+    job_skills = list(job.required_skills.values_list('name', flat=True))
+
+    skill_result = calculate_skill_match(student_skills, job_skills)
+    eligibility_result = check_eligibility(student, job)
+
+    return {
+        'student_id': student.id,
+        'student_name': student.full_name,
+        'job_id': job.id,
+        'job_title': job.title,
+        **skill_result,
+        **eligibility_result,
+    }

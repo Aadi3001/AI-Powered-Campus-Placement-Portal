@@ -34,6 +34,7 @@ urlpatterns = [
     path('api/student/', include('students.urls')),
     path('api/recruiter/', include('recruiters.urls')),
     path('api/applications/', include('applications.urls')),
+    path('api/matching/', include('matching.urls')),
 ]
 
 if settings.DEBUG:
