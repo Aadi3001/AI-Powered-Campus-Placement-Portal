@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'students',
     'recruiters',
     'applications',
+    'matching',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'

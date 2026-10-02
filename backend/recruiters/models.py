@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.db import models
+from django.core.exceptions import ValidationError
+from students.models import BRANCH_CHOICES
 
 
 class Company(models.Model):
@@ -54,6 +56,21 @@ class SkillTag(models.Model):
         return self.name
 
 
+def validate_eligible_branches(value):
+    """
+    Ensures every comma-separated branch code in this field
+    is one of our canonical BRANCH_CHOICES codes.
+    """
+    valid_codes = {code for code, _ in BRANCH_CHOICES}
+    entered_codes = [b.strip() for b in value.split(',') if b.strip()]
+
+    for code in entered_codes:
+        if code not in valid_codes:
+            raise ValidationError(
+                f"'{code}' is not a valid branch code. Valid codes: {', '.join(sorted(valid_codes))}"
+            )
+
+        
 class Job(models.Model):
     """
     A job posting / placement drive created by a recruiter.
@@ -63,6 +80,7 @@ class Job(models.Model):
         on_delete=models.CASCADE,
         related_name='jobs',
     )
+    
     title = models.CharField(max_length=200)
     description = models.TextField()
 
@@ -73,7 +91,13 @@ class Job(models.Model):
     )
 
     min_cgpa = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
-    eligible_branches = models.CharField(max_length=300, blank=True)  # comma-separated for now
+
+    eligible_branches = models.CharField(
+        max_length=300,
+        blank=True,
+        validators=[validate_eligible_branches],
+    )
+    
     min_graduation_year = models.PositiveIntegerField(null=True, blank=True)
     max_graduation_year = models.PositiveIntegerField(null=True, blank=True)
 

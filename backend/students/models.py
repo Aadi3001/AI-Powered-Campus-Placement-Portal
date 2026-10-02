@@ -3,6 +3,18 @@ from django.db import models
 from .utils import extract_text_from_pdf, extract_skills_from_text
 
 
+BRANCH_CHOICES = [
+    ('CSE', 'Computer Engineering'),
+    ('IT', 'Information Technology'),
+    ('AIDS', 'AI & Data Science Engineering'),
+    ('AIML', 'AI/ML Engineering'),
+    ('ENTC', 'Electronics and Telecommunication'),
+    ('MECH', 'Mechanical Engineering'),
+    ('CIVIL', 'Civil Engineering'),
+    ('ELECTRICAL', 'Electrical Engineering'),
+]
+
+
 class StudentProfile(models.Model):
     """
     Extends a User (role=STUDENT) with student-specific details.
@@ -20,7 +32,7 @@ class StudentProfile(models.Model):
     date_of_birth = models.DateField(null=True, blank=True)
 
     degree = models.CharField(max_length=100, blank=True)
-    branch = models.CharField(max_length=100, blank=True)
+    branch = models.CharField(max_length=100, blank=True, choices=BRANCH_CHOICES)
     graduation_year = models.PositiveIntegerField(null=True, blank=True)
     cgpa = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
 
