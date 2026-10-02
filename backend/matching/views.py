@@ -30,4 +30,13 @@ class JobMatchReportView(APIView):
             for app in applications
         ]
 
-        return Response(reports)
+        # Rank: eligible candidates first, then by skill match percentage (highest first)
+        ranked_reports = sorted(
+            reports,
+            key=lambda r: (not r['overall_eligible'], -r['skill_match_percentage']),
+        )
+
+        for rank, report in enumerate(ranked_reports, start=1):
+            report['rank'] = rank
+
+        return Response(ranked_reports)
