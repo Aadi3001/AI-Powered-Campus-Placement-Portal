@@ -39,7 +39,7 @@ class Command(BaseCommand):
         self.stdout.write("Seeding skill tags...")
         self.seed_skill_tags()
         self.stdout.write("Seeding students...")
-        self.seed_students(count=60)
+        self.seed_students(count=300)
         self.stdout.write("Seeding student skills...")
         self.seed_student_skills()
         self.stdout.write("Seeding companies and recruiters...")

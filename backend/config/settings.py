@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'recruiters',
     'applications',
     'matching',
+    'prediction',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
