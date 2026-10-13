@@ -1,4 +1,6 @@
 import random
+import math
+
 from decimal import Decimal
 from faker import Faker
 from django.core.management.base import BaseCommand
@@ -172,21 +174,26 @@ class Command(BaseCommand):
     def decide_outcome(self, student, report):
         """
         SYNTHETIC outcome rule, NOT real hiring data.
-        Any model trained on these outcomes learns this rule, so its accuracy
-        must be reported as a pipeline demo on synthetic data.
+        - About 10% of applications stay APPLIED and 10% stay SHORTLISTED (unresolved).
+        - Ineligible candidates are always REJECTED.
+        - Eligible candidates: score = 0.5 * skill match + 0.5 * normalised CGPA;
+        selection probability is a logistic S-curve of that score (centre 0.45,
+        steepness 10), then a random draw decides, so outcomes stay uncertain.
+        Any model trained on these outcomes learns this rule, so report its
+        results as a pipeline demonstration on synthetic data.
         """
         roll = random.random()
         if roll < 0.10:
-            return 'APPLIED'       # still unresolved
+            return 'APPLIED'
         if roll < 0.20:
-            return 'SHORTLISTED'   # still unresolved
+            return 'SHORTLISTED'
 
         if not report['overall_eligible']:
             return 'REJECTED'
 
-        cgpa_part = (float(student.cgpa) - 5.5) / (9.8 - 5.5)   # roughly 0 to 1
+        cgpa_part = (float(student.cgpa) - 5.5) / (9.8 - 5.5)
         skill_part = report['skill_match_percentage'] / 100
         score = 0.5 * skill_part + 0.5 * cgpa_part
 
-        probability = 0.15 + 0.6 * score
+        probability = 1 / (1 + math.exp(-10 * (score - 0.45)))
         return 'SELECTED' if random.random() < probability else 'REJECTED'
