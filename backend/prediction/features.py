@@ -26,3 +26,8 @@ def prepare_features(df):
     X = df[FEATURE_COLUMNS]
     y = df['selected']
     return X, y
+
+# Chosen by 5-fold cross-validation on the training data (see evaluation.py).
+# All four candidate feature sets had ROC AUC within noise of each other
+# (0.877-0.882), so the simplest set was kept.
+SELECTED_FEATURES = ['cgpa', 'skill_match_percentage']
