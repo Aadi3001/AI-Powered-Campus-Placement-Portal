@@ -25,7 +25,7 @@ def extract_skills_from_text(text, skill_names):
     text_lower = text.lower()
 
     for skill in skill_names:
-        pattern = r'\b' + re.escape(skill.lower()) + r'\b'
+        pattern = r'(?<!\w)' + re.escape(skill.lower()) + r'(?!\w)'
         if re.search(pattern, text_lower):
             found_skills.append(skill)
 
