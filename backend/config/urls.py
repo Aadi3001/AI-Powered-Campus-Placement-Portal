@@ -20,7 +20,7 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from accounts.views import RegisterView
+from accounts.views import RegisterView, MeView
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
@@ -36,6 +36,7 @@ urlpatterns = [
     path('api/applications/', include('applications.urls')),
     path('api/matching/', include('matching.urls')),
     path('api/prediction/', include('prediction.urls')),
+    path('api/me/', MeView.as_view(), name='me'),
 ]
 
 if settings.DEBUG:
