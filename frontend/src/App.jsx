@@ -6,6 +6,7 @@ import Login from './pages/Login.jsx'
 import Jobs from './pages/student/Jobs.jsx'
 import Applications from './pages/student/Applications.jsx'
 import MyJobs from './pages/recruiter/MyJobs.jsx'
+import Applicants from './pages/recruiter/Applicants.jsx'
 
 export default function App() {
   const { user, loading, logout } = useAuth()
@@ -64,6 +65,14 @@ export default function App() {
           element={
             <ProtectedRoute roles={['RECRUITER']}>
               <MyJobs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/recruiter/jobs/:jobId/applicants"
+          element={
+            <ProtectedRoute roles={['RECRUITER']}>
+              <Applicants />
             </ProtectedRoute>
           }
         />
