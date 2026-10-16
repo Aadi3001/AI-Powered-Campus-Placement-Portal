@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import api from '../../api.js'
+import JobInsights from '../../components/JobInsights.jsx'
 
 export default function Jobs() {
     const [jobs, setJobs] = useState([])
@@ -7,6 +8,7 @@ export default function Jobs() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
     const [message, setMessage] = useState('')
+    const [openId, setOpenId] = useState(null)
 
     useEffect(() => {
         // Both requests run at the same time; we continue when both are done
@@ -63,8 +65,9 @@ export default function Jobs() {
                                     {job.min_cgpa && <li>Minimum CGPA: {job.min_cgpa}</li>}
                                     {job.eligible_branches && <li>Branches: {job.eligible_branches}</li>}
                                 </ul>
+                                {openId === job.id && <JobInsights jobId={job.id} />}
                             </div>
-                            <div className="card-footer bg-transparent">
+                            <div className="card-footer bg-transparent d-flex gap-2 align-items-center">
                                 {appliedIds.has(job.id) ? (
                                     <span className="badge text-bg-success">Applied</span>
                                 ) : (
@@ -72,6 +75,12 @@ export default function Jobs() {
                                         Apply
                                     </button>
                                 )}
+                                <button
+                                    className="btn btn-outline-secondary btn-sm"
+                                    onClick={() => setOpenId(openId === job.id ? null : job.id)}
+                                >
+                                    {openId === job.id ? 'Hide my match' : 'Show my match'}
+                                </button>
                             </div>
                         </div>
                     </div>
