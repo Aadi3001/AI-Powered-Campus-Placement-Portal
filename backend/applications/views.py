@@ -9,7 +9,9 @@ class MyApplicationsView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Application.objects.filter(student=self.request.user.student_profile)
+        return Application.objects.filter(
+            student=self.request.user.student_profile
+        ).select_related('job')
 
     def perform_create(self, serializer):
         student = self.request.user.student_profile

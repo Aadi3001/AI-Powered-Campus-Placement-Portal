@@ -24,12 +24,17 @@ class SkillTagSerializer(serializers.ModelSerializer):
 
 
 class JobSerializer(serializers.ModelSerializer):
+    required_skill_names = serializers.SerializerMethodField()
+
     class Meta:
         model = Job
         fields = [
-            'id', 'title', 'description', 'required_skills',
+            'id', 'title', 'description', 'required_skills', 'required_skill_names',
             'min_cgpa', 'eligible_branches', 'min_graduation_year',
             'max_graduation_year', 'location', 'salary_range',
             'is_active', 'created_at',
         ]
         read_only_fields = ['id', 'created_at']
+
+    def get_required_skill_names(self, obj):
+        return [tag.name for tag in obj.required_skills.all()]

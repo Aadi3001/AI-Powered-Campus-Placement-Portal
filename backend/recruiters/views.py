@@ -43,7 +43,7 @@ class JobListCreateView(generics.ListCreateAPIView):
             If no required_skills were specified, auto-detect them from
             the job description using the same NLP technique as resumes.
     """
-    queryset = Job.objects.all()
+    queryset = Job.objects.prefetch_related('required_skills')
     serializer_class = JobSerializer
     permission_classes = [permissions.IsAuthenticated]
 

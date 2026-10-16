@@ -1,7 +1,10 @@
 import { Routes, Route, Link } from 'react-router-dom'
 import { useAuth } from './AuthContext.jsx'
+import ProtectedRoute from './components/ProtectedRoute.jsx'
 import Home from './pages/Home.jsx'
 import Login from './pages/Login.jsx'
+import Jobs from './pages/student/Jobs.jsx'
+import Applications from './pages/student/Applications.jsx'
 
 export default function App() {
   const { user, loading, logout } = useAuth()
@@ -11,7 +14,17 @@ export default function App() {
   return (
     <>
       <nav className="navbar navbar-dark bg-dark px-3">
-        <Link className="navbar-brand" to="/">Placement Portal</Link>
+        <div className="d-flex align-items-center gap-3">
+          <Link className="navbar-brand" to="/">Placement Portal</Link>
+          {user?.role === 'STUDENT' && (
+            <>
+              <Link className="text-light text-decoration-none" to="/student/jobs">Jobs</Link>
+              <Link className="text-light text-decoration-none" to="/student/applications">
+                My applications
+              </Link>
+            </>
+          )}
+        </div>
         {user ? (
           <div className="d-flex align-items-center gap-3">
             <span className="text-light">{user.username} ({user.role})</span>
@@ -26,6 +39,22 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route
+          path="/student/jobs"
+          element={
+            <ProtectedRoute roles={['STUDENT']}>
+              <Jobs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/applications"
+          element={
+            <ProtectedRoute roles={['STUDENT']}>
+              <Applications />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   )

@@ -4,9 +4,11 @@ from .models import Application
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
+    job_title = serializers.CharField(source='job.title', read_only=True)
+
     class Meta:
         model = Application
-        fields = ['id', 'job', 'status', 'applied_at']
+        fields = ['id', 'job', 'job_title', 'status', 'applied_at']
         read_only_fields = ['id', 'status', 'applied_at']
         
 

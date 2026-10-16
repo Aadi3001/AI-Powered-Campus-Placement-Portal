@@ -15,8 +15,8 @@ export default function Login() {
         setError('')
         setSubmitting(true)
         try {
-            await login(username, password)
-            navigate('/')
+            const me = await login(username, password)
+            navigate(me.role === 'STUDENT' ? '/student/jobs' : '/')
         } catch (err) {
             if (err.response?.status === 401) {
                 setError('Incorrect username or password.')
