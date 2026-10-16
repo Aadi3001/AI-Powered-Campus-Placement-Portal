@@ -5,6 +5,7 @@ import Home from './pages/Home.jsx'
 import Login from './pages/Login.jsx'
 import Jobs from './pages/student/Jobs.jsx'
 import Applications from './pages/student/Applications.jsx'
+import MyJobs from './pages/recruiter/MyJobs.jsx'
 
 export default function App() {
   const { user, loading, logout } = useAuth()
@@ -23,6 +24,9 @@ export default function App() {
                 My applications
               </Link>
             </>
+          )}
+          {user?.role === 'RECRUITER' && (
+            <Link className="text-light text-decoration-none" to="/recruiter/jobs">My jobs</Link>
           )}
         </div>
         {user ? (
@@ -52,6 +56,14 @@ export default function App() {
           element={
             <ProtectedRoute roles={['STUDENT']}>
               <Applications />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/recruiter/jobs"
+          element={
+            <ProtectedRoute roles={['RECRUITER']}>
+              <MyJobs />
             </ProtectedRoute>
           }
         />

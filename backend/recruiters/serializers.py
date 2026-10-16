@@ -38,3 +38,10 @@ class JobSerializer(serializers.ModelSerializer):
 
     def get_required_skill_names(self, obj):
         return [tag.name for tag in obj.required_skills.all()]
+
+
+class RecruiterJobSerializer(JobSerializer):
+    applicant_count = serializers.IntegerField(read_only=True)
+
+    class Meta(JobSerializer.Meta):
+        fields = JobSerializer.Meta.fields + ['applicant_count']

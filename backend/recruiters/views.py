@@ -1,7 +1,9 @@
 from rest_framework import generics, permissions
 from students.utils import extract_skills_from_text
 from .models import (Company, RecruiterProfile, SkillTag, Job)
-from .serializers import (CompanySerializer, RecruiterProfileSerializer, SkillTagSerializer, JobSerializer)
+from .serializers import (CompanySerializer, RecruiterProfileSerializer, SkillTagSerializer, JobSerializer, RecruiterJobSerializer)
+from django.db.models import Count
+from accounts.permissions import IsRecruiter
 
 
 class CompanyListCreateView(generics.ListCreateAPIView):
@@ -56,3 +58,17 @@ class JobListCreateView(generics.ListCreateAPIView):
 
             matching_tags = SkillTag.objects.filter(name__in=found_skill_names)
             job.required_skills.set(matching_tags)
+
+
+class MyJobsView(generics.ListAPIView):
+    """GET -> the logged-in recruiter's own jobs, with applicant counts."""
+    serializer_class = RecruiterJobSerializer
+    permission_classes = [IsRecruiter]
+
+    def get_queryset(self):
+        return (
+            Job.objects.filter(recruiter=self.request.user.recruiter_profile)
+            .prefetch_related('required_skills')
+            .annotate(applicant_count=Count('applications'))
+            .order_by('-created_at')
+        )
