@@ -7,6 +7,9 @@ from .models import Internship
 from .models import Certification
 
 
+MAX_RESUME_BYTES = 5 * 1024 * 1024  # 5 MB
+
+
 class StudentProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentProfile
@@ -16,6 +19,23 @@ class StudentProfileSerializer(serializers.ModelSerializer):
             'resume', 'resume_text', 'created_at', 'updated_at',
         ]
         read_only_fields = ['id', 'resume_text', 'created_at', 'updated_at']
+
+    def validate_resume(self, file):
+        if file is None:
+            return file
+        if file.size > MAX_RESUME_BYTES:
+            raise serializers.ValidationError('The file is too large (maximum 5 MB).')
+        header = file.read(5)
+        file.seek(0)
+        if header != b'%PDF-':
+            raise serializers.ValidationError('Please upload a valid PDF file.')
+        return file
+
+    def update(self, instance, validated_data):
+        if 'resume' in validated_data:
+            # A new resume was uploaded: clear the old text so it is read again
+            instance.resume_text = ''
+        return super().update(instance, validated_data)
 
 
 class EducationSerializer(serializers.ModelSerializer):

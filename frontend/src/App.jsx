@@ -7,6 +7,7 @@ import Jobs from './pages/student/Jobs.jsx'
 import Applications from './pages/student/Applications.jsx'
 import MyJobs from './pages/recruiter/MyJobs.jsx'
 import Applicants from './pages/recruiter/Applicants.jsx'
+import Profile from './pages/student/Profile.jsx'
 
 export default function App() {
   const { user, loading, logout } = useAuth()
@@ -24,6 +25,7 @@ export default function App() {
               <Link className="text-light text-decoration-none" to="/student/applications">
                 My applications
               </Link>
+              <Link className="text-light text-decoration-none" to="/student/profile">Profile</Link>
             </>
           )}
           {user?.role === 'RECRUITER' && (
@@ -57,6 +59,14 @@ export default function App() {
           element={
             <ProtectedRoute roles={['STUDENT']}>
               <Applications />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/profile"
+          element={
+            <ProtectedRoute roles={['STUDENT']}>
+              <Profile />
             </ProtectedRoute>
           }
         />
