@@ -3,11 +3,12 @@ import { useAuth } from './AuthContext.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import Home from './pages/Home.jsx'
 import Login from './pages/Login.jsx'
+import Register from './pages/Register.jsx'
 import Jobs from './pages/student/Jobs.jsx'
 import Applications from './pages/student/Applications.jsx'
+import Profile from './pages/student/Profile.jsx'
 import MyJobs from './pages/recruiter/MyJobs.jsx'
 import Applicants from './pages/recruiter/Applicants.jsx'
-import Profile from './pages/student/Profile.jsx'
 
 export default function App() {
   const { user, loading, logout } = useAuth()
@@ -40,12 +41,16 @@ export default function App() {
             </button>
           </div>
         ) : (
-          <Link className="btn btn-outline-light btn-sm" to="/login">Login</Link>
+          <div className="d-flex gap-2">
+            <Link className="btn btn-outline-light btn-sm" to="/login">Login</Link>
+            <Link className="btn btn-light btn-sm" to="/register">Register</Link>
+          </div>
         )}
       </nav>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route
           path="/student/jobs"
           element={

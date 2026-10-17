@@ -2,12 +2,15 @@ import axios from 'axios'
 
 const API_URL = 'http://127.0.0.1:8000/api'
 
+// Endpoints that work without being logged in
+const PUBLIC_URLS = ['/token/', '/register/']
+
 const api = axios.create({ baseURL: API_URL })
 
-// Attach the access token to every request
+// Attach the access token to every request except the public ones
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem('access')
-    if (token) {
+    if (token && !PUBLIC_URLS.includes(config.url)) {
         config.headers.Authorization = `Bearer ${token}`
     }
     return config
@@ -21,8 +24,8 @@ api.interceptors.response.use(
         const original = error.config
         const status = error.response?.status
 
-        // A wrong password at login is a normal 401: let the login page handle it
-        if (status !== 401 || original.url === '/token/') {
+        // Errors on public endpoints (like a wrong password) are shown by the page itself
+        if (status !== 401 || PUBLIC_URLS.includes(original.url)) {
             return Promise.reject(error)
         }
 

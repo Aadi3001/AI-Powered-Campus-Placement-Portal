@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import api from '../../api.js'
+import { errorText } from '../../errors.js'
 
 // Must match BRANCH_CHOICES in backend/students/models.py
 const BRANCHES = [
@@ -21,14 +22,6 @@ const TEXT_FIELDS = [
     { name: 'cgpa', label: 'CGPA', type: 'number', step: '0.01' },
 ]
 
-// Turns the API's validation errors into one readable sentence
-function errorText(err, fallback) {
-    const data = err.response?.data
-    if (data && typeof data === 'object') {
-        return Object.values(data).flat().join(' ')
-    }
-    return fallback
-}
 
 export default function Profile() {
     const [profile, setProfile] = useState(null)

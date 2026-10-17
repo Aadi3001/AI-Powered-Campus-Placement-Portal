@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../AuthContext.jsx'
 
 export default function Login() {
@@ -60,6 +60,9 @@ export default function Login() {
                     {submitting ? 'Logging in...' : 'Login'}
                 </button>
             </form>
+            <p className="mt-3 text-center small">
+                No account yet? <Link to="/register">Register</Link>
+            </p>
         </div>
     )
 }
