@@ -10,6 +10,7 @@ import Profile from './pages/student/Profile.jsx'
 import MyJobs from './pages/recruiter/MyJobs.jsx'
 import Applicants from './pages/recruiter/Applicants.jsx'
 import RecruiterProfile from './pages/recruiter/Profile.jsx'
+import NewJob from './pages/recruiter/NewJob.jsx'
 
 export default function App() {
   const { user, loading, logout } = useAuth()
@@ -100,6 +101,14 @@ export default function App() {
           element={
             <ProtectedRoute roles={['RECRUITER']}>
               <RecruiterProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/recruiter/jobs/new"
+          element={
+            <ProtectedRoute roles={['RECRUITER']}>
+              <NewJob />
             </ProtectedRoute>
           }
         />

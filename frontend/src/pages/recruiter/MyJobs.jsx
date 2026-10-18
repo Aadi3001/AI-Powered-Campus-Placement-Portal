@@ -18,7 +18,10 @@ export default function MyJobs() {
 
     return (
         <div className="container py-4">
-            <h1 className="mb-4">My jobs</h1>
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                <h1 className="mb-0">My jobs</h1>
+                <Link className="btn btn-primary" to="/recruiter/jobs/new">Post a new job</Link>
+            </div>
             {error && <div className="alert alert-danger">{error}</div>}
             {!error && jobs.length === 0 && (
                 <p className="text-muted">You have not posted any jobs yet.</p>

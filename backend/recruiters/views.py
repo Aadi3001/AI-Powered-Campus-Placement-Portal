@@ -4,6 +4,7 @@ from .models import (Company, RecruiterProfile, SkillTag, Job)
 from .serializers import (CompanySerializer, RecruiterProfileSerializer, SkillTagSerializer, JobSerializer, RecruiterJobSerializer)
 from django.db.models import Count
 from accounts.permissions import IsRecruiter, IsRecruiterOrReadOnly
+from rest_framework.exceptions import ValidationError
 
 
 class CompanyListCreateView(generics.ListCreateAPIView):
@@ -48,9 +49,13 @@ class JobListCreateView(generics.ListCreateAPIView):
     queryset = Job.objects.prefetch_related('required_skills')
     serializer_class = JobSerializer
     permission_classes = [IsRecruiterOrReadOnly]
-    
+
     def perform_create(self, serializer):
-        job = serializer.save(recruiter=self.request.user.recruiter_profile)
+        recruiter = self.request.user.recruiter_profile
+        if recruiter.company is None:
+            raise ValidationError('Set your company in your profile before posting a job.')
+
+        job = serializer.save(recruiter=recruiter)
 
         if not job.required_skills.exists():
             all_skill_names = list(SkillTag.objects.values_list('name', flat=True))
