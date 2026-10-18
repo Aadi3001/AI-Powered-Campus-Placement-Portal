@@ -43,7 +43,7 @@ export default function Register() {
             })
             // Log the new user straight in
             const me = await login(form.username, form.password)
-            navigate(me.role === 'STUDENT' ? '/student/profile' : '/recruiter/jobs')
+            navigate(me.role === 'STUDENT' ? '/student/profile' : '/recruiter/profile')
         } catch (err) {
             setError(errorText(err, 'Could not create your account. Is the backend running?'))
         } finally {

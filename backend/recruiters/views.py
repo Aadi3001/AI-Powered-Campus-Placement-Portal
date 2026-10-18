@@ -3,7 +3,7 @@ from students.utils import extract_skills_from_text
 from .models import (Company, RecruiterProfile, SkillTag, Job)
 from .serializers import (CompanySerializer, RecruiterProfileSerializer, SkillTagSerializer, JobSerializer, RecruiterJobSerializer)
 from django.db.models import Count
-from accounts.permissions import IsRecruiter
+from accounts.permissions import IsRecruiter, IsRecruiterOrReadOnly
 
 
 class CompanyListCreateView(generics.ListCreateAPIView):
@@ -13,7 +13,7 @@ class CompanyListCreateView(generics.ListCreateAPIView):
     """
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsRecruiterOrReadOnly]
 
 
 class MyRecruiterProfileView(generics.RetrieveUpdateAPIView):
@@ -22,7 +22,7 @@ class MyRecruiterProfileView(generics.RetrieveUpdateAPIView):
     PUT/PATCH -> updates the logged-in recruiter's own profile
     """
     serializer_class = RecruiterProfileSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsRecruiter]
 
     def get_object(self):
         return self.request.user.recruiter_profile
@@ -35,7 +35,7 @@ class SkillTagListCreateView(generics.ListCreateAPIView):
     """
     queryset = SkillTag.objects.all()
     serializer_class = SkillTagSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsRecruiterOrReadOnly]
 
 
 class JobListCreateView(generics.ListCreateAPIView):
@@ -47,8 +47,8 @@ class JobListCreateView(generics.ListCreateAPIView):
     """
     queryset = Job.objects.prefetch_related('required_skills')
     serializer_class = JobSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
+    permission_classes = [IsRecruiterOrReadOnly]
+    
     def perform_create(self, serializer):
         job = serializer.save(recruiter=self.request.user.recruiter_profile)
 
