@@ -28,3 +28,12 @@ class IsRecruiterOrReadOnly(BasePermission):
         if request.method in SAFE_METHODS:
             return True
         return user.role == 'RECRUITER'
+
+
+class IsTPO(BasePermission):
+    """The placement office (TPO). Admins are allowed too."""
+    message = 'Only the placement office can access this.'
+
+    def has_permission(self, request, view):
+        user = request.user
+        return bool(user and user.is_authenticated and user.role in ('TPO', 'ADMIN'))

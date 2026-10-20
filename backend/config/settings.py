@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'matching',
     'prediction',
     'corsheaders',
+    'tpo',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'

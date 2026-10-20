@@ -36,6 +36,7 @@ urlpatterns = [
     path('api/applications/', include('applications.urls')),
     path('api/matching/', include('matching.urls')),
     path('api/prediction/', include('prediction.urls')),
+    path('api/tpo/', include('tpo.urls')),
     path('api/me/', MeView.as_view(), name='me'),
 ]
 
