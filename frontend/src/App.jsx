@@ -11,6 +11,8 @@ import MyJobs from './pages/recruiter/MyJobs.jsx'
 import Applicants from './pages/recruiter/Applicants.jsx'
 import RecruiterProfile from './pages/recruiter/Profile.jsx'
 import NewJob from './pages/recruiter/NewJob.jsx'
+import TpoDashboard from './pages/tpo/Dashboard.jsx'
+
 
 export default function App() {
   const { user, loading, logout } = useAuth()
@@ -36,6 +38,9 @@ export default function App() {
               <Link className="text-light text-decoration-none" to="/recruiter/jobs">My jobs</Link>
               <Link className="text-light text-decoration-none" to="/recruiter/profile">Profile</Link>
             </>
+          )}
+          {(user?.role === 'TPO' || user?.role === 'ADMIN') && (
+            <Link className="text-light text-decoration-none" to="/tpo/dashboard">Dashboard</Link>
           )}
         </div>
         {user ? (
@@ -109,6 +114,14 @@ export default function App() {
           element={
             <ProtectedRoute roles={['RECRUITER']}>
               <NewJob />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tpo/dashboard"
+          element={
+            <ProtectedRoute roles={['TPO', 'ADMIN']}>
+              <TpoDashboard />
             </ProtectedRoute>
           }
         />
