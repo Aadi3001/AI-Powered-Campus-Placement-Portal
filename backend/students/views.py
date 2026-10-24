@@ -1,6 +1,7 @@
 from rest_framework import generics, permissions
 from .models import (StudentProfile, Education, Skill, Project, Internship, Certification)
 from .serializers import (StudentProfileSerializer, EducationSerializer, SkillSerializer, ProjectSerializer, InternshipSerializer, CertificationSerializer)
+from accounts.permissions import IsStudent
 
 
 class MyStudentProfileView(generics.RetrieveUpdateAPIView):
@@ -10,7 +11,7 @@ class MyStudentProfileView(generics.RetrieveUpdateAPIView):
     Profile must already exist (created separately, see Step 9d).
     """
     serializer_class = StudentProfileSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsStudent]
 
     def get_object(self):
         # Always return the profile belonging to the current logged-in user
@@ -23,7 +24,7 @@ class EducationListCreateView(generics.ListCreateAPIView):
     POST -> add a new education entry for the logged-in student
     """
     serializer_class = EducationSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsStudent]
 
     def get_queryset(self):
         # Only return education entries belonging to the logged-in user
@@ -36,7 +37,7 @@ class EducationListCreateView(generics.ListCreateAPIView):
 
 class SkillListCreateView(generics.ListCreateAPIView):
     serializer_class = SkillSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsStudent]
 
     def get_queryset(self):
         return Skill.objects.filter(student=self.request.user.student_profile)
@@ -47,7 +48,7 @@ class SkillListCreateView(generics.ListCreateAPIView):
 
 class ProjectListCreateView(generics.ListCreateAPIView):
     serializer_class = ProjectSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsStudent]
 
     def get_queryset(self):
         return Project.objects.filter(student=self.request.user.student_profile)
@@ -58,7 +59,7 @@ class ProjectListCreateView(generics.ListCreateAPIView):
 
 class InternshipListCreateView(generics.ListCreateAPIView):
     serializer_class = InternshipSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsStudent]
 
     def get_queryset(self):
         return Internship.objects.filter(student=self.request.user.student_profile)
@@ -69,8 +70,8 @@ class InternshipListCreateView(generics.ListCreateAPIView):
 
 class CertificationListCreateView(generics.ListCreateAPIView):
     serializer_class = CertificationSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
+    permission_classes = [IsStudent]
+    
     def get_queryset(self):
         return Certification.objects.filter(student=self.request.user.student_profile)
 

@@ -2,11 +2,12 @@ from rest_framework import generics, permissions
 from rest_framework.exceptions import ValidationError
 from .models import Application
 from .serializers import ApplicationSerializer, ApplicationStatusUpdateSerializer
+from accounts.permissions import IsRecruiter, IsStudent
 
 
 class MyApplicationsView(generics.ListCreateAPIView):
     serializer_class = ApplicationSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsStudent]
 
     def get_queryset(self):
         return Application.objects.filter(
@@ -27,7 +28,7 @@ class JobApplicantsView(generics.ListAPIView):
     but only if the logged-in recruiter owns that job.
     """
     serializer_class = ApplicationSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsRecruiter]
 
     def get_queryset(self):
         job_id = self.kwargs['job_id']
@@ -43,7 +44,7 @@ class UpdateApplicationStatusView(generics.UpdateAPIView):
     but only if the logged-in recruiter owns the related job.
     """
     serializer_class = ApplicationStatusUpdateSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsRecruiter]
 
     def get_queryset(self):
         return Application.objects.filter(
