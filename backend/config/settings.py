@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'prediction',
     'corsheaders',
     'tpo',
+    'notifications',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'

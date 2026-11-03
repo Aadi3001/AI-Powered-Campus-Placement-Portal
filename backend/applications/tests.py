@@ -1,12 +1,11 @@
 from decimal import Decimal
-
 from rest_framework.test import APITestCase
-
 from accounts.models import User
 from recruiters.models import Company, Job, SkillTag
 from students.models import Skill
-
 from .models import Application
+from notifications.models import Notification
+
 
 PASSWORD = 'TestPass123'
 
@@ -147,3 +146,25 @@ class RankingTests(ApplicationTestBase):
         )
         self.assertEqual([row['rank'] for row in response.data], [1, 2, 3, 4])
         self.assertFalse(response.data[3]['overall_eligible'])
+
+
+class NotificationHookTests(ApplicationTestBase):
+    def test_applying_notifies_the_recruiter(self):
+        self.client.force_authenticate(user=self.stu1)
+        self.client.post('/api/applications/my/', {'job': self.job.id}, format='json')
+        note = Notification.objects.get(user=self.rec1)
+        self.assertIn('Student One', note.message)
+        self.assertIn('Python Developer', note.message)
+
+    def test_status_change_notifies_the_student_only_once(self):
+        application = self.apply(self.stu1)
+        url = f'/api/applications/{application.id}/status/'
+        self.client.force_authenticate(user=self.rec1)
+
+        self.client.patch(url, {'status': 'SHORTLISTED'}, format='json')
+        self.assertEqual(Notification.objects.filter(user=self.stu1).count(), 1)
+        self.assertIn('Shortlisted', Notification.objects.get(user=self.stu1).message)
+
+        # Setting the same status again must not send a second notification
+        self.client.patch(url, {'status': 'SHORTLISTED'}, format='json')
+        self.assertEqual(Notification.objects.filter(user=self.stu1).count(), 1)

@@ -38,6 +38,7 @@ urlpatterns = [
     path('api/prediction/', include('prediction.urls')),
     path('api/tpo/', include('tpo.urls')),
     path('api/me/', MeView.as_view(), name='me'),
+    path('api/notifications/', include('notifications.urls')),
 ]
 
 if settings.DEBUG:

@@ -3,6 +3,7 @@ from rest_framework.exceptions import ValidationError
 from .models import Application
 from .serializers import ApplicationSerializer, ApplicationStatusUpdateSerializer
 from accounts.permissions import IsRecruiter, IsStudent
+from notifications.utils import notify
 
 
 class MyApplicationsView(generics.ListCreateAPIView):
@@ -20,6 +21,10 @@ class MyApplicationsView(generics.ListCreateAPIView):
         if Application.objects.filter(student=student, job=job).exists():
             raise ValidationError("You have already applied to this job.")
         serializer.save(student=student)
+        notify(
+            job.recruiter.user,
+            f'{student.full_name or student.user.username} applied for "{job.title}".',                f'/recruiter/jobs/{job.id}/applicants',
+        )
         
 
 class JobApplicantsView(generics.ListAPIView):
@@ -50,3 +55,14 @@ class UpdateApplicationStatusView(generics.UpdateAPIView):
         return Application.objects.filter(
             job__recruiter=self.request.user.recruiter_profile
         )
+
+    def perform_update(self, serializer):
+        old_status = serializer.instance.status
+        application = serializer.save()
+        if application.status != old_status:
+            notify(
+                application.student.user,
+                f'Your application for "{application.job.title}" is now '
+                f'{application.get_status_display()}.',
+                '/student/applications',
+            )
