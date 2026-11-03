@@ -12,6 +12,8 @@ import Applicants from './pages/recruiter/Applicants.jsx'
 import RecruiterProfile from './pages/recruiter/Profile.jsx'
 import NewJob from './pages/recruiter/NewJob.jsx'
 import TpoDashboard from './pages/tpo/Dashboard.jsx'
+import NotificationBell from './components/NotificationBell.jsx'
+import Notifications from './pages/Notifications.jsx'
 
 
 export default function App() {
@@ -45,6 +47,7 @@ export default function App() {
         </div>
         {user ? (
           <div className="d-flex align-items-center gap-3">
+            <NotificationBell />
             <span className="text-light">{user.username} ({user.role})</span>
             <button className="btn btn-outline-light btn-sm" onClick={logout}>
               Logout
@@ -122,6 +125,14 @@ export default function App() {
           element={
             <ProtectedRoute roles={['TPO', 'ADMIN']}>
               <TpoDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute>
+              <Notifications />
             </ProtectedRoute>
           }
         />
