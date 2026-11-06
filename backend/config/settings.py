@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'tpo',
     'notifications',
+    'interviews',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'

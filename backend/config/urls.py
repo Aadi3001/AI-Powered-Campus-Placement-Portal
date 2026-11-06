@@ -39,6 +39,7 @@ urlpatterns = [
     path('api/tpo/', include('tpo.urls')),
     path('api/me/', MeView.as_view(), name='me'),
     path('api/notifications/', include('notifications.urls')),
+    path('api/interviews/', include('interviews.urls')),
 ]
 
 if settings.DEBUG:
